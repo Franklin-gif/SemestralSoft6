@@ -1,0 +1,13 @@
+{
+  "colores_1": {
+    "id": "colores_1",
+    "area": "colores",
+    "preguntaAudio": "pregunta_color_rojo.mp3",
+    "preguntaTexto": "¿Cuál es el color rojo?",
+    "opciones": [
+      { "id": "op_1", "imagen": "esfera_azul.png", "esCorrecta": false, "pista": "Este es el color azul, como el mar." },
+      { "id": "op_2", "imagen": "camion_rojo.png", "esCorrecta": true },
+      { "id": "op_3", "imagen": "pollito_amarillo.png", "esCorrecta": false, "pista": "Este es el color amarillo, como el sol." }
+    ]
+  }
+}

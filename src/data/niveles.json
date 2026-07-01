@@ -1,0 +1,76 @@
+{
+  "niveles": [
+    {
+      "id": "nivel_1",
+      "titulo": "El Bosque Rojo",
+      "tematica": "Color Rojo y sus variantes",
+      "recompensaIcono": "🍓",
+      "actividades": [
+        {
+          "id": "n1_a1",
+          "tipo": "SELECCION",
+          "pregunta": "¿Dónde está la manzana roja?",
+          "opciones": [
+            {"id": "o1", "contenido": "🔵", "esCorrecta": false, "pista": "Ese es el color azul, como el cielo."},
+            {"id": "o2", "contenido": "🍎", "esCorrecta": true},
+            {"id": "o3", "contenido": "🟡", "esCorrecta": false, "pista": "Ese es el color amarillo, como el sol."}
+          ]
+        },
+        {
+          "id": "n1_a2",
+          "tipo": "RELACION",
+          "pregunta": "Busca el objeto que es del mismo color que la fresa 🍓",
+          "opciones": [
+            {"id": "o1", "contenido": "🚗", "esCorrecta": true},
+            {"id": "o2", "contenido": "🌲", "esCorrecta": false, "pista": "El árbol es verde como las hojas."}
+          ]
+        },
+        {
+          "id": "n1_a3",
+          "tipo": "SELECCION",
+          "pregunta": "¡Encuentra los globos que son de color rojo! 🎈",
+          "opciones": [
+            {"id": "o1", "contenido": "🎈", "esCorrecta": true},
+            {"id": "o2", "contenido": "🍏", "esCorrecta": false, "pista": "La manzana es verde como las hojitas."},
+            {"id": "o3", "contenido": "🐳", "esCorrecta": false, "pista": "La ballena vive en el mar azul."}
+          ]
+        },
+        {
+          "id": "n1_a4",
+          "tipo": "SELECCION",
+          "pregunta": "Toca el sombrero del guardián rojo",
+          "opciones": [
+            {"id": "o1", "contenido": "👒", "esCorrecta": false, "pista": "Es un sombrero verde."},
+            {"id": "o2", "contenido": "⛑️", "esCorrecta": true}
+          ]
+        },
+        {
+          "id": "n1_a5",
+          "tipo": "IDENTIFICACION",
+          "pregunta": "¿El cangrejo 🦀 es de color rojo?",
+          "opciones": [
+            {"id": "o1", "contenido": "¡Sí! 👍", "esCorrecta": true},
+            {"id": "o2", "contenido": "No 👎", "esCorrecta": false, "pista": "¡Los cangrejos del bosque son muy rojos!"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nivel_2",
+      "titulo": "El Mar Azul",
+      "tematica": "Color Azul y mezclas",
+      "recompensaIcono": "🐳",
+      "actividades": [
+        {
+          "id": "n2_a1",
+          "tipo": "SELECCION",
+          "pregunta": "¿Qué pececito es de color azul?",
+          "opciones": [
+            {"id": "o1", "contenido": "🐠", "esCorrecta": false, "pista": "Este pez es naranja."},
+            {"id": "o2", "contenido": "🐟", "esCorrecta": true}
+          ]
+        }
+      ]
+    }
+  ]
+}
