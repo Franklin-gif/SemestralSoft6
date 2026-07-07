@@ -23,10 +23,9 @@ export const PanelPadresScreen = ({ navigation }) => {
         <Text style={styles.subtituloPanel}>Monitorea de forma constructiva el desarrollo e identificación de habilidades de tus hijos.</Text>
       </View>
 
-      {/* Línea divisoria nativa (Reemplazo de <hr>) */}
+      {/* Reemplazo nativo correcto para la línea divisoria horizontal */}
       <View style={styles.lineaDivisoria} />
 
-      {/* Sección Perfiles */}
       <Text style={styles.seccionTitulo}>1. Seleccionar Pequeño Explorador</Text>
       <View style={styles.contenedorListaPerfiles}>
         {perfiles.length === 0 ? (
@@ -54,7 +53,6 @@ export const PanelPadresScreen = ({ navigation }) => {
         )}
       </View>
 
-      {/* Sección Reporte Analítico */}
       {perfilActivo ? (
         <View style={styles.areaReporte}>
           <Text style={styles.seccionTituloInterno}>Reporte de Desempeño: {perfilActivo.nombre}</Text>

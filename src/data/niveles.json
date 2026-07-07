@@ -1,6 +1,41 @@
 {
   "niveles": [
     {
+      "id": "pre_nivel",
+      "titulo": "¡Aprendamos los Colores!",
+      "tematica": "Introducción a los Colores Primarios",
+      "recompensaIcono": "🎨",
+      "actividades": [
+        {
+          "id": "pn_a1",
+          "tipo": "PRESENTACION",
+          "colorHex": "#E8722C",
+          "pregunta": "¡Este es el color ROJO! 🔴\n\nVamos a decirlo juntos:\n\n✨ R  O  J  O ✨\n\n¡Repítelo en voz alta!",
+          "opciones": [
+            {"id": "o1", "contenido": "🔴 ¡Siguiente!", "esCorrecta": true}
+          ]
+        },
+        {
+          "id": "pn_a2",
+          "tipo": "PRESENTACION",
+          "colorHex": "#2E75B6",
+          "pregunta": "¡Este es el color AZUL! 🔵\n\nVamos a decirlo juntos:\n\n✨ A  Z  U  L ✨\n\n¡Repítelo en voz alta!",
+          "opciones": [
+            {"id": "o1", "contenido": "🔵 ¡Siguiente!", "esCorrecta": true}
+          ]
+        },
+        {
+          "id": "pn_a3",
+          "tipo": "PRESENTACION",
+          "colorHex": "#FFD166",
+          "pregunta": "¡Este es el color AMARILLO! 🟡\n\nVamos a decirlo juntos:\n\n✨ A M A R I L L O ✨\n\n¡Repítelo en voz alta!",
+          "opciones": [
+            {"id": "o1", "contenido": "🟡 ¡Terminar lección!", "esCorrecta": true}
+          ]
+        }
+      ]
+    },
+    {
       "id": "nivel_1",
       "titulo": "El Bosque Rojo",
       "tematica": "Color Rojo y sus variantes",
