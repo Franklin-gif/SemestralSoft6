@@ -1,16 +1,31 @@
-import React, { useState, useContext, useCallback, useRef } from 'react';
+import React, { useState, useContext, useCallback, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import { Audio } from 'expo-av';
 import { useFocusEffect } from '@react-navigation/native';
 import { AUDIO_CATALOG } from '../utils/audioCatalog';
 import { AventuraContext } from '../context/AventuraContext';
 import { COLORS, FONT, SPACING, RADIUS, SHADOW } from '../theme/theme';
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+
+const mascotaPortada = require('../../assets/mascota-portada.png');
 
 const { width } = Dimensions.get('window');
 
 export const SelectorPerfilScreen = ({ navigation }) => {
   const contextoAventura = useContext(AventuraContext);
   const sonidoRef = useRef(null);
+  const elevacionMascota = useSharedValue(0);
+  const mascotaAnimada = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: elevacionMascota.value },
+      { scale: 1 + Math.abs(elevacionMascota.value) / 280 },
+      { rotate: `${elevacionMascota.value / 8}deg` },
+    ],
+  }));
+
+  useEffect(() => {
+    elevacionMascota.value = withRepeat(withTiming(-14, { duration: 1400 }), -1, true);
+  }, [elevacionMascota]);
 
   const perfilActivo = contextoAventura?.perfilActivo;
   const cargandoPerfil = contextoAventura?.cargandoPerfil;
@@ -95,9 +110,12 @@ export const SelectorPerfilScreen = ({ navigation }) => {
       <View style={styles.decoracionArriba} />
 
       <View style={styles.ContenedorCuerpo}>
-        <View style={styles.logoContenedor}>
-          <Text style={styles.emojiLogo}>🦉🎨</Text>
-        </View>
+        <Animated.Image
+          style={[styles.mascotaPortada, mascotaAnimada]}
+          accessibilityLabel="Mascota estrella de Mundo Colorin"
+          resizeMode="contain"
+          source={mascotaPortada}
+        />
 
         <Text style={styles.tituloApp}>Mundo Colorín</Text>
         <Text style={styles.subtituloApp}>¡Una aventura llena de sonidos y colores!</Text>
@@ -127,8 +145,8 @@ export const SelectorPerfilScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.fondoAlterno, justifyContent: 'center', alignItems: 'center' },
   ContenedorCuerpo: { zIndex: 5, alignItems: 'center', width: '100%', paddingHorizontal: SPACING.lg },
-  logoContenedor: { width: 130, height: 130, borderRadius: 65, backgroundColor: COLORS.superficie, justifyContent: 'center', alignItems: 'center', marginBottom: SPACING.lg, ...SHADOW.lg },
-  emojiLogo: { fontSize: 60 },
+  mascotaPortada: { width: 270, height: 270, marginBottom: SPACING.sm },
+  emojiLogo: { display: 'none' },
   tituloApp: { fontSize: FONT.size.hero, fontWeight: FONT.weight.black, color: COLORS.primary, textAlign: 'center' },
   subtituloApp: { fontSize: FONT.size.md, color: COLORS.textoMuted, textAlign: 'center', marginTop: SPACING.sm, marginBottom: SPACING.xxl, fontWeight: FONT.weight.bold },
   botonPrincipal: { flexDirection: 'row', width: width * 0.8, paddingVertical: SPACING.lg, paddingHorizontal: 25, backgroundColor: COLORS.secondary, borderRadius: RADIUS.xl, alignItems: 'center', borderBottomWidth: 5, borderBottomColor: COLORS.secondaryDark, marginBottom: SPACING.lg, ...SHADOW.md },
