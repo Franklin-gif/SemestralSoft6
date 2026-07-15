@@ -1,59 +1,70 @@
-// src/screens/MapaNivelesScreen.js
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import { AventuraContext } from '../context/AventuraContext';
-import estructuraNiveles from '../data/niveles.json'; 
+import estructuraNiveles from '../data/niveles.json';
+import { COLORS, FONT, SPACING, RADIUS, SHADOW } from '../theme/theme';
 
 export const MapaNivelesScreen = ({ navigation }) => {
-  const { perfilActivo, setPerfilActivo } = useContext(AventuraContext);
+  const { perfilActivo } = useContext(AventuraContext);
 
-  // 🎯 Mecanismo de autoreparación segura si el estado llegase a fallar
   const perfilSeguro = perfilActivo || {
-    nombre: "Pequeño Aventurero",
-    avatar: "👶",
-    nivelesCompletados: []
+    nombre: 'Aventurero',
+    avatar: '👶',
+    nivelesCompletados: [],
   };
 
   const manejarNavegacionJuego = async (nivelId) => {
     try {
       await Audio.setIsEnabledAsync(false);
-      await Audio.setIsEnabledAsync(true); 
-    } catch (e) { 
-      console.log("Error al limpiar canales de audio:", e); 
+      await Audio.setIsEnabledAsync(true);
+    } catch (e) {
+      console.log('Error al limpiar canales de audio:', e);
     }
 
-    let colorInicial = "azul"; 
+    let colorInicial = 'azul';
     let esModoPreNivel = false;
 
-    if (nivelId === "pre_nivel") {
-      colorInicial = "azul"; 
+    if (nivelId === 'pre_nivel') {
+      colorInicial = 'azul';
       esModoPreNivel = true;
-    } else if (nivelId.toLowerCase().includes("rojo") || nivelId === "nivel_rojo") {
-      colorInicial = "rojo";
+    } else if (nivelId.toLowerCase().includes('rojo') || nivelId === 'nivel_rojo' || nivelId === 'nivel_1') {
+      colorInicial = 'rojo';
       esModoPreNivel = false;
-    } else if (nivelId.toLowerCase().includes("amarillo") || nivelId === "nivel_amarillo") {
-      colorInicial = "amarillo";
+    } else if (nivelId.toLowerCase().includes('amarillo') || nivelId === 'nivel_amarillo') {
+      colorInicial = 'amarillo';
       esModoPreNivel = false;
-    } else if (nivelId.toLowerCase().includes("azul") || nivelId === "nivel_azul") {
-      colorInicial = "azul";
+    } else if (nivelId.toLowerCase().includes('azul') || nivelId === 'nivel_azul' || nivelId === 'nivel_2') {
+      colorInicial = 'azul';
       esModoPreNivel = false;
     }
 
-    navigation.navigate('MotorJuego', { 
+    navigation.navigate('MotorJuego', {
+      nivelId,
       colorNivel: colorInicial,
-      esPreNivel: esModoPreNivel
+      esPreNivel: esModoPreNivel,
     });
   };
 
   return (
     <View style={styles.contenedor}>
+      <View style={styles.barraSuperior}>
+        <TouchableOpacity style={styles.botonRetroceder} onPress={() => navigation.reset({ index: 0, routes: [{ name: 'SelectorPerfil' }] })}>
+          <Text style={styles.textoRetroceder}>⬅️ Volver</Text>
+        </TouchableOpacity>
+
+        <View style={styles.badgePerfilDerecha}>
+          <Text style={styles.avatarTextoTop}>{perfilSeguro.avatar}</Text>
+          <Text style={styles.nombreTextoTop} numberOfLines={1}>{perfilSeguro.nombre}</Text>
+        </View>
+      </View>
+
       <View style={styles.header}>
         <Text style={styles.saludo}>¡A aprender, {perfilSeguro.nombre}! 🚀</Text>
         <Text style={styles.sub}>Elige tu próxima aventura de color</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollMapa}>
+      <ScrollView contentContainerStyle={styles.scrollMapa} showsVerticalScrollIndicator={false}>
         {estructuraNiveles.niveles.map((nivel, index) => {
           const esPrimerNivel = index === 0;
           const estaDesbloqueado = esPrimerNivel || perfilSeguro.nivelesCompletados.includes(estructuraNiveles.niveles[index - 1]?.id);
@@ -81,17 +92,27 @@ export const MapaNivelesScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: '#EBF4FA', padding: 16 },
-  header: { marginTop: 40, marginBottom: 20, alignItems: 'center' },
-  saludo: { fontSize: 26, fontWeight: 'bold', color: '#2E75B6' },
-  sub: { fontSize: 16, color: '#555', marginTop: 4 },
-  scrollMapa: { alignItems: 'center', paddingBottom: 40 },
-  tarjetaNivel: { flexDirection: 'row', width: '90%', minHeight: 100, borderRadius: 24, marginVertical: 12, padding: 16, alignItems: 'center', elevation: 4 },
-  desbloqueado: { backgroundColor: '#FFF', borderWidth: 2, borderColor: '#B0D4DE' },
-  bloqueado: { backgroundColor: '#D6E4EB', opacity: 0.7 },
-  badgeIcono: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#F0F7FA', justifyContent: 'center', alignItems: 'center' },
+  contenedor: { flex: 1, backgroundColor: COLORS.fondoAlterno, padding: SPACING.md },
+  barraSuperior: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 40, width: '100%' },
+  botonRetroceder: { backgroundColor: COLORS.peligro, paddingVertical: SPACING.sm, paddingHorizontal: SPACING.md, borderRadius: RADIUS.sm, borderBottomWidth: 3, borderBottomColor: COLORS.peligroOscuro },
+  textoRetroceder: { color: COLORS.textoClaro, fontWeight: FONT.weight.bold, fontSize: FONT.size.sm },
+
+  badgePerfilDerecha: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.superficie, paddingVertical: SPACING.sm, paddingHorizontal: 14, borderRadius: RADIUS.pill, borderWidth: 2, borderColor: COLORS.borde, maxWidth: 160, ...SHADOW.sm },
+  avatarTextoTop: { fontSize: 18, marginRight: 6 },
+  nombreTextoTop: { fontSize: FONT.size.sm, fontWeight: FONT.weight.black, color: COLORS.texto },
+
+  header: { marginTop: SPACING.lg, marginBottom: SPACING.lg, alignItems: 'center' },
+  saludo: { fontSize: FONT.size.xxl, fontWeight: FONT.weight.black, color: COLORS.primary, textAlign: 'center' },
+  sub: { fontSize: FONT.size.md, color: COLORS.textoSecundario, marginTop: SPACING.xs, fontWeight: FONT.weight.bold },
+  scrollMapa: { alignItems: 'center', paddingBottom: SPACING.xxl },
+  tarjetaNivel: { flexDirection: 'row', width: '95%', minHeight: 100, borderRadius: RADIUS.xl, marginVertical: SPACING.sm, padding: SPACING.md, alignItems: 'center', ...SHADOW.md },
+  desbloqueado: { backgroundColor: COLORS.superficie, borderWidth: 2, borderColor: COLORS.borde, borderBottomWidth: 6, borderBottomColor: COLORS.borde },
+  bloqueado: { backgroundColor: COLORS.bloqueado, opacity: 0.7, borderWidth: 1, borderColor: COLORS.borde },
+  badgeIcono: { width: 64, height: 64, borderRadius: 32, backgroundColor: COLORS.fondoAlterno, justifyContent: 'center', alignItems: 'center' },
   iconoText: { fontSize: 32 },
-  infoNivel: { marginLeft: 16, flex: 1 },
-  tituloNivel: { fontSize: 20, fontWeight: 'bold', color: '#333' },
-  tematica: { fontSize: 14, color: '#666', marginTop: 2 }
+  infoNivel: { marginLeft: SPACING.md, flex: 1 },
+  tituloNivel: { fontSize: FONT.size.xl, fontWeight: FONT.weight.bold, color: COLORS.texto },
+  tematica: { fontSize: FONT.size.sm, color: COLORS.textoMuted, marginTop: 2, fontWeight: FONT.weight.bold },
 });
+
+export default MapaNivelesScreen;

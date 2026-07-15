@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Mundo Colorin necesita permiso de reconocimiento de voz para evaluar si el nino dice correctamente el color.",
+        "NSMicrophoneUsageDescription": "Mundo Colorin utiliza el microfono para escuchar las respuestas habladas del nino."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -29,6 +33,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": []
+    "plugins": [
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Mundo Colorin utiliza el microfono para escuchar las respuestas habladas del nino.",
+          "speechRecognitionPermission": "Mundo Colorin utiliza el reconocimiento de voz para comprobar los colores que dice el nino.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
+        }
+      ]
+    ]
   }
 }

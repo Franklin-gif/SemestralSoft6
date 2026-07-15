@@ -2,18 +2,19 @@ import React, { useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { AventuraContext } from '../context/AventuraContext';
 import { BotonMagico } from '../components/BotonMagico';
+import { COLORS, FONT, SPACING, RADIUS, SHADOW } from '../theme/theme';
 
 export const PanelPadresScreen = ({ navigation }) => {
-  const { perfiles, estadisticas, seleccionarPerfil, perfilActivo } = useContext(AventuraContext);
+  const { perfiles = [], estadisticas = {}, seleccionarPerfil, perfilActivo } = useContext(AventuraContext);
   const statsNiño = perfilActivo ? estadisticas[perfilActivo.id] : null;
 
   const obtenerDiagnosticoColor = (datosColor) => {
-    if (!datosColor || datosColor.intentosTotales === 0) return { porcentaje: 0, clase: "Aún sin explorar", color: "#999" };
+    if (!datosColor || datosColor.intentosTotales === 0) return { porcentaje: 0, clase: 'Aún sin explorar', color: COLORS.textoMuted };
     const porcentajeAcierto = Math.round((datosColor.aciertos / datosColor.intentosTotales) * 100);
-    
-    if (porcentajeAcierto >= 80) return { porcentaje: porcentajeAcierto, clase: "¡Excelente fortaleza! 🌟", color: "#4CAF50" };
-    if (porcentajeAcierto >= 50) return { porcentaje: porcentajeAcierto, clase: "En buen progreso 👍", color: "#FFB300" };
-    return { porcentaje: porcentajeAcierto, clase: "Requiere apoyo guiado 🧭", color: "#E8722C" };
+
+    if (porcentajeAcierto >= 80) return { porcentaje: porcentajeAcierto, clase: '¡Excelente fortaleza! 🌟', color: COLORS.exito };
+    if (porcentajeAcierto >= 50) return { porcentaje: porcentajeAcierto, clase: 'En buen progreso 👍', color: COLORS.advertencia };
+    return { porcentaje: porcentajeAcierto, clase: 'Requiere apoyo guiado 🧭', color: COLORS.error };
   };
 
   return (
@@ -23,7 +24,6 @@ export const PanelPadresScreen = ({ navigation }) => {
         <Text style={styles.subtituloPanel}>Monitorea de forma constructiva el desarrollo e identificación de habilidades de tus hijos.</Text>
       </View>
 
-      {/* Reemplazo nativo correcto para la línea divisoria horizontal */}
       <View style={styles.lineaDivisoria} />
 
       <Text style={styles.seccionTitulo}>1. Seleccionar Pequeño Explorador</Text>
@@ -39,9 +39,9 @@ export const PanelPadresScreen = ({ navigation }) => {
             renderItem={({ item }) => {
               const esActivo = perfilActivo?.id === item.id;
               return (
-                <TouchableOpacity 
-                  style={[styles.tarjetaPerfil, esActivo && styles.perfilActivoBorder]} 
-                  onPress={() => seleccionarPerfil(item.id)}
+                <TouchableOpacity
+                  style={[styles.tarjetaPerfil, esActivo && styles.perfilActivoBorder]}
+                  onPress={() => seleccionarPerfil && seleccionarPerfil(item.id)}
                 >
                   <Text style={styles.avatarText}>{item.avatar}</Text>
                   <Text style={styles.nombreText}>{item.nombre}</Text>
@@ -56,21 +56,21 @@ export const PanelPadresScreen = ({ navigation }) => {
       {perfilActivo ? (
         <View style={styles.areaReporte}>
           <Text style={styles.seccionTituloInterno}>Reporte de Desempeño: {perfilActivo.nombre}</Text>
-          
+
           <View style={styles.resumenLogros}>
             <View style={styles.cajaLogro}>
               <Text style={styles.logroNumero}>⭐ {perfilActivo.estrellas}</Text>
               <Text style={styles.logroLabel}>Estrellas Acumuladas</Text>
             </View>
             <View style={styles.cajaLogro}>
-              <Text style={styles.logroNumero}>🏅 {perfilActivo.nivelesCompletados.length}</Text>
+              <Text style={styles.logroNumero}>🏅 {(perfilActivo.nivelesCompletados || []).length}</Text>
               <Text style={styles.logroLabel}>Aventuras Superadas</Text>
             </View>
           </View>
 
           <Text style={styles.subSeccionTitulo}>Insignias Coleccionadas:</Text>
           <View style={styles.filaInsignias}>
-            {perfilActivo.insignias.length === 0 ? (
+            {(perfilActivo.insignias || []).length === 0 ? (
               <Text style={styles.textoMuted}>Completará su primera aventura muy pronto.</Text>
             ) : (
               perfilActivo.insignias.map((insignia, index) => (
@@ -111,46 +111,48 @@ export const PanelPadresScreen = ({ navigation }) => {
       )}
 
       <View style={styles.areaAcciones}>
-        <BotonMagico title="Regresar al Inicio" color="#2E75B6" onPress={() => navigation.navigate('MenuPrincipal')} />
+        <BotonMagico title="Regresar al Inicio" color={COLORS.primary} onPress={() => navigation.reset({ index: 0, routes: [{ name: 'SelectorPerfil' }] })} />
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: '#FAFAFA', padding: 20 },
-  header: { marginTop: 40, marginBottom: 5 },
-  tituloPanel: { fontSize: 22, fontWeight: 'bold', color: '#1B365D' },
-  subtituloPanel: { fontSize: 13, color: '#666', marginTop: 4, lineHeight: 18 },
-  lineaDivisoria: { height: 2, backgroundColor: '#EAEAEA', marginVertical: 18 },
-  seccionTitulo: { fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 12 },
-  seccionTituloInterno: { fontSize: 16, fontWeight: 'bold', color: '#1B365D', marginBottom: 12 },
-  subSeccionTitulo: { fontSize: 14, fontWeight: '700', color: '#555', marginTop: 16, marginBottom: 8 },
-  contenedorListaPerfiles: { height: 110, marginBottom: 10 },
-  tarjetaPerfil: { alignItems: 'center', justifyContent: 'center', padding: 10, backgroundColor: '#FFF', borderRadius: 16, marginRight: 12, minWidth: 95, borderWidth: 2, borderColor: '#EAEAEA', position: 'relative', height: 90 },
-  perfilActivoBorder: { borderColor: '#2E75B6', backgroundColor: '#F0F6FB' },
+  contenedor: { flex: 1, backgroundColor: COLORS.fondo, padding: SPACING.md },
+  header: { marginTop: 40, marginBottom: SPACING.xs },
+  tituloPanel: { fontSize: FONT.size.xxl, fontWeight: FONT.weight.bold, color: COLORS.primaryDark },
+  subtituloPanel: { fontSize: FONT.size.xs, color: COLORS.textoMuted, marginTop: SPACING.xs, lineHeight: 18 },
+  lineaDivisoria: { height: 2, backgroundColor: COLORS.bordeSuave, marginVertical: SPACING.lg },
+  seccionTitulo: { fontSize: FONT.size.md, fontWeight: FONT.weight.bold, color: COLORS.texto, marginBottom: SPACING.md },
+  seccionTituloInterno: { fontSize: FONT.size.md, fontWeight: FONT.weight.bold, color: COLORS.primaryDark, marginBottom: SPACING.md },
+  subSeccionTitulo: { fontSize: FONT.size.sm, fontWeight: FONT.weight.bold, color: COLORS.textoSecundario, marginTop: SPACING.md, marginBottom: SPACING.sm },
+  contenedorListaPerfiles: { height: 110, marginBottom: SPACING.sm },
+  tarjetaPerfil: { alignItems: 'center', justifyContent: 'center', padding: SPACING.sm, backgroundColor: COLORS.superficie, borderRadius: RADIUS.md, marginRight: SPACING.md, minWidth: 95, borderWidth: 2, borderColor: COLORS.bordeSuave, position: 'relative', height: 90 },
+  perfilActivoBorder: { borderColor: COLORS.primary, backgroundColor: COLORS.primaryLight },
   avatarText: { fontSize: 28 },
-  nombreText: { fontSize: 13, fontWeight: 'bold', color: '#444', marginTop: 2 },
-  badgeActivo: { position: 'absolute', top: -5, right: -5, backgroundColor: '#2E75B6', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 8 },
-  badgeText: { color: '#FFF', fontSize: 9, fontWeight: 'bold' },
-  textoVacio: { color: '#999', fontSize: 13, marginTop: 10 },
-  areaReporte: { backgroundColor: '#FFF', padding: 16, borderRadius: 24, marginTop: 10, borderWidth: 1, borderColor: '#EAEAEA', shadowColor: '#000', shadowOpacity: 0.02, shadowRadius: 5, elevation: 2 },
-  resumenLogros: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 8 },
-  cajaLogro: { backgroundColor: '#F9FBFD', padding: 12, borderRadius: 16, alignItems: 'center', width: '48%', borderWidth: 1, borderColor: '#EDF2F7' },
-  logroNumero: { fontSize: 18, fontWeight: 'bold', color: '#333' },
-  logroLabel: { fontSize: 11, color: '#718096', marginTop: 2 },
-  filaInsignias: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, paddingVertical: 4 },
-  insigniaItem: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#FFF9E6', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FFE082' },
+  nombreText: { fontSize: FONT.size.sm, fontWeight: FONT.weight.bold, color: COLORS.texto, marginTop: 2 },
+  badgeActivo: { position: 'absolute', top: -5, right: -5, backgroundColor: COLORS.primary, paddingHorizontal: 7, paddingVertical: 2, borderRadius: RADIUS.sm },
+  badgeText: { color: COLORS.textoClaro, fontSize: 9, fontWeight: FONT.weight.bold },
+  textoVacio: { color: COLORS.textoMuted, fontSize: FONT.size.sm, marginTop: SPACING.sm },
+  areaReporte: { backgroundColor: COLORS.superficie, padding: SPACING.md, borderRadius: RADIUS.xl, marginTop: SPACING.sm, borderWidth: 1, borderColor: COLORS.bordeSuave, ...SHADOW.sm },
+  resumenLogros: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: SPACING.sm },
+  cajaLogro: { backgroundColor: COLORS.fondo, padding: SPACING.sm, borderRadius: RADIUS.md, alignItems: 'center', width: '48%', borderWidth: 1, borderColor: COLORS.bordeSuave },
+  logroNumero: { fontSize: FONT.size.lg, fontWeight: FONT.weight.bold, color: COLORS.texto },
+  logroLabel: { fontSize: 11, color: COLORS.textoMuted, marginTop: 2 },
+  filaInsignias: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm, paddingVertical: SPACING.xs },
+  insigniaItem: { width: 44, height: 44, borderRadius: 22, backgroundColor: COLORS.superficieAlerta, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: COLORS.bordeAlerta },
   insigniaIcono: { fontSize: 22 },
-  textoMuted: { fontSize: 13, color: '#718096', fontStyle: 'italic' },
-  tarjetaStat: { backgroundColor: '#F8FAFC', padding: 12, borderRadius: 16, marginVertical: 6, borderWidth: 1, borderColor: '#EDF2F7' },
-  infoStatHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  nombreColorText: { fontSize: 14, fontWeight: 'bold', color: '#2D3748' },
-  claseText: { fontSize: 12, fontWeight: 'bold' },
-  barraFondoStat: { height: 8, backgroundColor: '#E2E8F0', borderRadius: 4, overflow: 'hidden' },
+  textoMuted: { fontSize: FONT.size.sm, color: COLORS.textoMuted, fontStyle: 'italic' },
+  tarjetaStat: { backgroundColor: COLORS.superficieSuave, padding: SPACING.sm, borderRadius: RADIUS.md, marginVertical: SPACING.xs, borderWidth: 1, borderColor: COLORS.bordeSuave },
+  infoStatHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: SPACING.xs },
+  nombreColorText: { fontSize: FONT.size.sm, fontWeight: FONT.weight.bold, color: COLORS.texto },
+  claseText: { fontSize: 12, fontWeight: FONT.weight.bold },
+  barraFondoStat: { height: 8, backgroundColor: COLORS.bordeSuave, borderRadius: 4, overflow: 'hidden' },
   barraRellenoStat: { height: '100%', borderRadius: 4 },
-  detallesStatText: { fontSize: 11, color: '#718096', marginTop: 5 },
-  alertaSeleccion: { backgroundColor: '#F7FAFC', padding: 16, borderRadius: 16, alignItems: 'center', marginTop: 10, borderWidth: 1, borderColor: '#EDF2F7' },
-  textoAlerta: { color: '#718096', fontSize: 13, textAlign: 'center', lineHeight: 18 },
-  areaAcciones: { marginTop: 24, alignItems: 'center' }
+  detallesStatText: { fontSize: 11, color: COLORS.textoMuted, marginTop: 5 },
+  alertaSeleccion: { backgroundColor: COLORS.superficieSuave, padding: SPACING.md, borderRadius: RADIUS.md, alignItems: 'center', marginTop: SPACING.sm, borderWidth: 1, borderColor: COLORS.bordeSuave },
+  textoAlerta: { color: COLORS.textoMuted, fontSize: FONT.size.sm, textAlign: 'center', lineHeight: 18 },
+  areaAcciones: { marginTop: SPACING.lg, alignItems: 'center' },
 });
+
+export default PanelPadresScreen;

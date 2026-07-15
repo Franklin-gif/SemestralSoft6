@@ -1,26 +1,57 @@
-// src/context/AventuraContext.js
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AventuraContext = createContext();
 
 export const AventuraProvider = ({ children }) => {
-  // 🎯 Inicializa con un perfil por defecto para que ninguna pantalla se bloquee al iniciar
-  const [perfilActivo, setPerfilActivo] = useState({
-    nombre: "Pequeño Aventurero",
-    avatar: "👶",
-    nivelesCompletados: []
-  });
+  const [perfilActivo, setPerfilActivoState] = useState(null);
+  const [cargandoPerfil, setCargandoPerfil] = useState(true);
 
-  const seleccionarPerfil = (perfil) => {
-    setPerfilActivo(perfil);
+  // CLAVE PARA ALMACENAR EN EL DISPOSITIVO
+  const STORAGE_KEY = '@mundo_colorin_perfil';
+
+  // 1. Cargar el perfil automáticamente al abrir la aplicación
+  useEffect(() => {
+    const cargarPerfilGuardado = async () => {
+      try {
+        const perfilJson = await AsyncStorage.getItem(STORAGE_KEY);
+        if (perfilJson !== null) {
+          setPerfilActivoState(JSON.parse(perfilJson));
+        }
+      } catch (error) {
+        console.log("Error al cargar el perfil desde el dispositivo:", error);
+      } finally {
+        setCargandoPerfil(false);
+      }
+    };
+
+    cargarPerfilGuardado();
+  }, []);
+
+  // 2. Función contenedora para actualizar el estado y guardar en el almacenamiento local
+  const setPerfilActivo = async (nuevoPerfil) => {
+    try {
+      if (nuevoPerfil) {
+        setPerfilActivoState(nuevoPerfil);
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(nuevoPerfil));
+      } else {
+        // Si se pasa null, se borra el perfil (por ejemplo, para resetear)
+        setPerfilActivoState(null);
+        await AsyncStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (error) {
+      console.log("Error al guardar el perfil en el dispositivo:", error);
+    }
   };
 
   return (
-    <AventuraContext.Provider value={{ 
-      perfilActivo, 
-      setPerfilActivo, 
-      seleccionarPerfil 
-    }}>
+    <AventuraContext.Provider 
+      value={{ 
+        perfilActivo, 
+        setPerfilActivo,
+        cargandoPerfil 
+      }}
+    >
       {children}
     </AventuraContext.Provider>
   );

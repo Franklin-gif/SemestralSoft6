@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { AppContext } from '../context/AppContext';
+import { COLORS, FONT, RADIUS, SHADOW, SPACING } from '../theme/theme';
 import dataActividades from '../data/actividades.json';
 
 export const ActividadScreen = ({ navigation }) => {
@@ -61,7 +62,7 @@ export const ActividadScreen = ({ navigation }) => {
             onPress={() => manejarRespuesta(opcion)}
           >
             {/* Aquí irían las imágenes del JSON. Usamos bloques de color simulados */}
-            <View style={[styles.bloqueImagen, { backgroundColor: opcion.esCorrecta ? '#E8722C' : '#2E75B6' }]} />
+            <View style={[styles.bloqueImagen, { backgroundColor: opcion.esCorrecta ? COLORS.error : COLORS.primary }]} />
           </TouchableOpacity>
         ))}
       </View>
@@ -70,15 +71,15 @@ export const ActividadScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: '#F9F9F9', padding: 20, justifyContent: 'space-around' },
+  contenedor: { flex: 1, backgroundColor: COLORS.fondo, padding: SPACING.lg, justifyContent: 'space-around' },
   header: { alignItems: 'center' },
-  tituloApp: { fontSize: 24, fontWeight: 'bold', color: '#2E75B6' },
-  barraProgreso: { width: '80%', height: 12, backgroundColor: '#FFD166', borderRadius: 6, marginTop: 10 },
-  contenedorGuia: { backgroundColor: '#FFF', padding: 20, borderRadius: 20, borderBottomLeftRadius: 0, marginHorizontal: 20, borderWidth: 2, borderColor: '#EEE' },
-  bocadilloTexto: { fontSize: 20, textAlign: 'center', color: '#333' },
-  gridOpciones: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 20 },
-  tarjetaOpcion: { width: 140, height: 140, backgroundColor: '#FFF', borderRadius: 24, padding: 10, elevation: 3, justifyContent: 'center', alignItems: 'center' },
+  tituloApp: { fontSize: FONT.size.xl, fontWeight: FONT.weight.bold, color: COLORS.primary },
+  barraProgreso: { width: '80%', height: 12, backgroundColor: COLORS.accent, borderRadius: RADIUS.sm, marginTop: SPACING.sm },
+  contenedorGuia: { backgroundColor: COLORS.superficie, padding: SPACING.lg, borderRadius: RADIUS.md, borderBottomLeftRadius: 0, marginHorizontal: SPACING.lg, borderWidth: 2, borderColor: COLORS.bordeSuave, ...SHADOW.sm },
+  bocadilloTexto: { fontSize: FONT.size.lg, textAlign: 'center', color: COLORS.texto },
+  gridOpciones: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: SPACING.lg },
+  tarjetaOpcion: { width: 140, height: 140, backgroundColor: COLORS.superficie, borderRadius: RADIUS.lg, padding: SPACING.sm, justifyContent: 'center', alignItems: 'center', ...SHADOW.md },
   tarjetaDeshabilitada: { opacity: 0.6 },
-  pistaResplandor: { borderWidth: 4, borderColor: '#FFD166', shadowColor: '#FFD166', shadowRadius: 10, elevation: 8 },
-  bloqueImagen: { width: 100, height: 100, borderRadius: 16 }
+  pistaResplandor: { borderWidth: 4, borderColor: COLORS.accent },
+  bloqueImagen: { width: 100, height: 100, borderRadius: RADIUS.sm }
 });
